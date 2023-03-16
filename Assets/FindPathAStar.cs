@@ -92,8 +92,41 @@ public class FindPathAStar : MonoBehaviour
         Vector3 endLocation = new Vector3(locations[1].x, 0.0f, locations[1].z) * maze.scale;
         startNode = new PathMaker(new MapLocation(locations[1].x, locations[1].z), 0, 0, 0,
             Instantiate(finishNodePrefab, endLocation, Quaternion.identity), null);
+
+        openNodes.Clear();
+        closedNodes.Clear();
+        openNodes.Add(startNode);
+        lastPosition = startNode;
     }
 
+    void Search(PathMaker thisNode)
+    {
+        if (thisNode.Equals(goalNode)) { done = true; return; };    // the goal has been reached
+
+        foreach (MapLocation direction in maze.directions)
+        {
+            MapLocation neighbour = thisNode.location + direction;
+            if (maze.map[neighbour.x, neighbour.z] == 1) continue;
+            if (neighbour.x < 1 || neighbour.x >= maze.width || neighbour.z < 1 || neighbour.z >= maze.depth) continue;
+            if (IsClosed(neighbour)) continue;
+
+            float G = Vector2.Distance(thisNode.location.ToVector(), neighbour.ToVector()) + thisNode.G;
+            float H = Vector2.Distance(thisNode.location.ToVector(), goalNode.location.ToVector());
+            float F = G + H;
+
+            GameObject pathNode = Instantiate(pathNodePrefab, new Vector3(neighbour.x, 0.0f, neighbour.z) * maze.scale, Quaternion.identity);
+
+        }
+    }
+
+    bool IsClosed(MapLocation marker)
+    {
+        foreach (var p in closedNodes)
+        {
+            if (p.location.Equals(marker)) return true;
+        }
+        return false;
+    }
 
     private void Update()
     {
