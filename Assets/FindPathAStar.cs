@@ -112,7 +112,7 @@ public class FindPathAStar : MonoBehaviour
             if (neighbour.x < 1 || neighbour.x >= maze.width || neighbour.z < 1 || neighbour.z >= maze.depth) continue;
             if (IsClosed(neighbour)) continue;
 
-            float G = Vector2.Distance(thisNode.location.ToVector(), neighbour.ToVector());
+            float G = Vector2.Distance(thisNode.location.ToVector(), neighbour.ToVector()) + thisNode.G;
             float H = Vector2.Distance(thisNode.location.ToVector(), goalNode.location.ToVector());
             float F = G + H;
 
